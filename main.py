@@ -1,99 +1,74 @@
 """
 Simple Budget Tracker
 Author: Shivansh Tripathi
-
-This program allows users to:
-1. Add expenses with strict input validation
-2. View all expenses
-3. View expense totals by category
-
-Key concepts used:
-- Functions
-- Input validation loops
-- Lists & dictionaries
-- File persistence (JSON)
-- Clean separation of logic
+Description:
+A command-line Python application that allows users to track daily expenses,
+validate inputs, store data, and view spending summaries by category.
 """
 
-import json
 from datetime import datetime
 
-DATA_FILE = "expenses.json"
+# -------------------------------
+# In-memory storage for expenses
+# -------------------------------
+expenses = []
 
-
-# ---------- Utility Functions ----------
-
-def load_expenses():
-    """Load expenses from file if it exists"""
-    try:
-        with open(DATA_FILE, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []
-
-
-def save_expenses(expenses):
-    """Save expenses to file"""
-    with open(DATA_FILE, "w") as file:
-        json.dump(expenses, file, indent=4)
-
+# -------------------------------
+# Helper Functions
+# -------------------------------
 
 def get_valid_date():
     """
-    Force user to enter a valid date in YYYY-MM-DD format.
-    Keeps prompting until valid input is provided.
+    Prompt user until a valid date (YYYY-MM-DD) is entered.
     """
     while True:
-        date_input = input("Date (YYYY-MM-DD): ")
+        date_input = input("Date (YYYY-MM-DD): ").strip()
         try:
             datetime.strptime(date_input, "%Y-%m-%d")
             return date_input
         except ValueError:
             print("❌ Invalid date format. Please use YYYY-MM-DD (e.g. 2025-12-06).")
 
-
 def get_valid_amount():
     """
-    Force user to enter a valid numeric amount.
-    Rejects non-numbers and negative values.
+    Prompt user until a valid positive number is entered.
     """
     while True:
-        amount_input = input("Amount (in dollars): ")
+        amount_input = input("Amount (in dollars): ").strip()
         try:
             amount = float(amount_input)
             if amount <= 0:
                 raise ValueError
             return round(amount, 2)
         except ValueError:
-            print("❌ Please enter a valid positive number (e.g. 12.50).")
+            print("❌ Please enter a valid number (e.g. 12.50).")
 
+# -------------------------------
+# Core Features
+# -------------------------------
 
-# ---------- Core Features ----------
-
-def add_expense(expenses):
-    """Add a new expense with full validation"""
+def add_expense():
+    """
+    Add a new expense with full validation.
+    """
     print("\n--- Add Expense ---")
-
     date = get_valid_date()
     category = input("Category (food, transport, school, etc.): ").strip().lower()
     amount = get_valid_amount()
 
-    expense = {
+    expenses.append({
         "date": date,
         "category": category,
         "amount": amount
-    }
-
-    expenses.append(expense)
-    save_expenses(expenses)
+    })
 
     print("✅ Expense added successfully!")
 
-
-def view_expenses(expenses):
-    """Display all recorded expenses"""
+def view_all_expenses():
+    """
+    Display all recorded expenses.
+    """
     print("\n--- All Expenses ---")
-
     if not expenses:
         print("No expenses recorded yet.")
         return
@@ -101,29 +76,28 @@ def view_expenses(expenses):
     for exp in expenses:
         print(f"{exp['date']} | {exp['category']} | ${exp['amount']:.2f}")
 
-
-def view_summary_by_category(expenses):
-    """Display total spending grouped by category"""
+def view_summary_by_category():
+    """
+    Display total spending grouped by category.
+    """
     print("\n--- Summary by Category ---")
-
     if not expenses:
         print("No expenses recorded yet.")
         return
 
     summary = {}
-
     for exp in expenses:
-        category = exp["category"]
-        summary[category] = summary.get(category, 0) + exp["amount"]
+        summary[exp["category"]] = summary.get(exp["category"], 0) + exp["amount"]
 
     for category, total in summary.items():
-        print(f"{category.title()}: ${total:.2f}")
+        print(f"{category}: ${total:.2f}")
 
-
-# ---------- Main Menu Loop ----------
+# -------------------------------
+# Main Menu Loop
+# -------------------------------
 
 def main():
-    expenses = load_expenses()
+    print("Welcome to the Simple Budget Tracker!")
 
     while True:
         print("\n=== Simple Budget Tracker ===")
@@ -135,17 +109,20 @@ def main():
         choice = input("Choose an option (1-4): ").strip()
 
         if choice == "1":
-            add_expense(expenses)
+            add_expense()
         elif choice == "2":
-            view_expenses(expenses)
+            view_all_expenses()
         elif choice == "3":
-            view_summary_by_category(expenses)
+            view_summary_by_category()
         elif choice == "4":
-            print("Progress saved. Goodbye!")
+            print("👋 Goodbye!")
             break
         else:
             print("❌ Invalid choice. Please select 1–4.")
 
+# -------------------------------
+# Program Entry Point
+# -------------------------------
 
 if __name__ == "__main__":
     main()
