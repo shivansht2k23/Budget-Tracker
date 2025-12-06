@@ -1,24 +1,28 @@
 # Budget Tracker (Python)
 
-A command-line budget tracking application that allows users to record daily expenses, view spending history, and analyze totals by category.
+**Author:** Shivansh Tripathi  
+**School:** McNair Academic High School  
+**Project Type:** Command-line Python Application
 
-## Features
-- Add expenses with strict input validation
+## 📌 Description
+A simple budget tracker that allows users to record expenses, validate inputs,
+and view spending summaries by category.
+
+## ✅ Features
+- Add expenses with strict date and amount validation
 - View all recorded expenses
-- View spending totals grouped by category
-- Persistent data storage using JSON
+- View spending summary by category
+- Clean menu-driven interface
+- Input validation using Python best practices
 
-## Skills Used
+## 🛠 Skills Used
 - Python
 - Functions
-- Input validation
-- File handling (JSON)
+- Loops & conditionals
 - Dictionaries & lists
-- Defensive programming
+- Input validation
+- Date handling (`datetime`)
 
-## How to Run
-1. Clone the repository
-2. Run the program:
-
+## ▶ How to Run
 ```bash
 python main.py
